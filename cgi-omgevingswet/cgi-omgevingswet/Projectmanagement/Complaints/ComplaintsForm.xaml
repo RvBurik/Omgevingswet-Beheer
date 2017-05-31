@@ -1,0 +1,92 @@
+﻿<Window x:Class="cgi_omgevingswet.Projectmanagement.Complaints.ComplaintsForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:cgi_omgevingswet.Projectmanagement.Complaints"
+        mc:Ignorable="d"
+        Title="ComplaintsForm" WindowState="Maximized" Height="700">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="130" />
+            <RowDefinition Height="200" />
+            <RowDefinition Height="200" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Content="Bezwaar --gebruikersnaam--" FontSize="30" Style="{StaticResource CommonLabelSize}" />
+        <Label Grid.Row="1" Content="Informatie bezwaarmaker" FontSize="12" Style="{StaticResource CommonLabelSize}" />
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Grid.Column="0" Content="Voornaam:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Grid.Column="0" Content="Tussenvoegsel:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="2" Grid.Column="0" Content="Achternaam:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="3" Grid.Column="0" Content="Mailadres:" />
+
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Voornaam}" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Tussenvoegsel}" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Achternaa}" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Mailadres}" IsReadOnly="True" />
+        </Grid>
+
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Grid.Column="2" Content="Telefoonnummers:" />
+            <ListBox Margin="10,0,0,3" Grid.Row="1" Grid.Column="2" x:Name="ListTelephoneNumbers" SelectionChanged="ListTelephoneNumbers_SelectionChanged"></ListBox>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Grid.Column="0" Content="Bezwaar:" />
+            <TextBox Margin="10,0,20,3" Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" MaxLength="4000" VerticalScrollBarVisibility="Visible"  Text="{Binding Path=Bezwaar}" />
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Grid.Column="0" Content="Status:" />
+            
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Grid.Column="0" Content="Goedkeuren:" />
+                <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Grid.Column="1" Content="Afkeuren:" />
+                <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Grid.Column="2" Content="In behandeling:" />
+            </Grid>
+
+            <TextBox Margin="10,0,20,3" Grid.Row="2" Grid.Column="0" TextWrapping="Wrap" MaxLength="4000" VerticalScrollBarVisibility="Visible"  Text="{Binding Path=Bezwaarreden}" />
+        </Grid>
+    </Grid>
+</Window>
