@@ -22,3 +22,6 @@ C:\Users\Johan Heij\documents\visual studio 2013\Projects\cgi-omgevingswet\cgi-o
 C:\Users\Johan Heij\documents\visual studio 2013\Projects\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Licenses\LicenseForm.g.cs
 C:\Users\Johan Heij\documents\visual studio 2013\Projects\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Licenses\AddLicense.baml
 C:\Users\Johan Heij\documents\visual studio 2013\Projects\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Licenses\AddLicense.g.cs
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\bin\Debug\cgi-omgevingswet.exe.config
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet.exe
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet.pdb
