@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Threading;
-
+using cgi_omgevingswet.Projectmanagement.Complaints;
 
 namespace cgi_omgevingswet.Projectmanagement
 {
@@ -107,7 +107,28 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameters[6] = startNumber;
             Parameters[7] = (startNumber + rowsPerPage);
             //verbetering is om deze queries de volgende keer in kleine stukken te hakken voor de informatie behoefte dat ik nodig heb.
-            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex, 
+
+            /*
+             * SELECT * FROM (
+	SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex,
+	CONVERT(VARCHAR(10),p.aangemaaktop,103) aangemaaktop, g.gebruikersnaam, p.projectid, p.werkzaamheid,
+	part.voornaam, part.achternaam, part.tussenvoegsel, g.mailadres--, gc.voornaam as cvoornaam, gc.tussenvoegsel as ctusssenvoegsel, gc.achternaam as cachternaam, rvg.Gebruikersrolid
+	FROM project p
+	INNER JOIN projectrol_van_gebruiker pvg ON p.projectid = pvg.projectid
+	INNER JOIN gebruiker g ON pvg.gebruikersnaam = g.gebruikersnaam
+	INNER JOIN particulier part ON g.gebruikersnaam = part.gebruikersnaam
+--	INNER JOIN GEBRUIKERSROLLENBIJPROJECT grp ON grp.projectid = p.projectid
+--	INNER JOIN ROLLENVANGEBRUIKER rvg ON grp.GebruikersRolID = rvg.GebruikersRolID
+--	INNER JOIN GEBRUIKER gc ON gc.gebruikersnaam = rvg.gebruikersnaam
+	where LOWER(part.voornaam) like '%'
+	AND LOWER(part.achternaam) like '%'
+	AND LOWER(g.gebruikersnaam) like '%'
+	AND LOWER(g.mailadres) like '%'
+	AND p.aangemaaktop between '%' AND '%'
+) sub
+WHERE sub.RowIndex > '%' AND sub.RowIndex <= '%'
+             */
+            DataTable dt = Classes.Database_Init.SQLQueryReader(/*@"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex, 
                                                         CONVERT(VARCHAR(10),p.aangemaaktop,103) aangemaaktop, p.gebruikersnaam, p.projectid, p.werkzaamheid, 
                                                         g.voornaam, g.achternaam, g.tussenvoegsel, g.mailadres, gc.voornaam as cvoornaam, gc.tussenvoegsel as ctusssenvoegsel, gc.achternaam as cachternaam, rvg.Gebruikersrolid FROM project p
                                                         INNER JOIN (SELECT voornaam, achternaam, tussenvoegsel, mailadres, gebruikersnaam FROM gebruiker) g ON p.gebruikersnaam = g.gebruikersnaam
@@ -119,7 +140,23 @@ namespace cgi_omgevingswet.Projectmanagement
                                                         AND LOWER(p.gebruikersnaam) like @2
                                                         AND LOWER(g.mailadres) like @3
                                                         AND p.aangemaaktop between @4 AND @5) sub 
-                                                        WHERE sub.RowIndex > @6 AND sub.RowIndex <= @7", Parameters);
+                                                        WHERE sub.RowIndex > @6 AND sub.RowIndex <= @7"*/@"SELECT * FROM (
+	SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex,
+	CONVERT(VARCHAR(10),p.aangemaaktop,103) aangemaaktop, g.gebruikersnaam, p.projectid, p.werkzaamheid,
+	part.voornaam, part.achternaam, part.tussenvoegsel, g.mailadres--, gc.voornaam as cvoornaam, gc.tussenvoegsel as ctusssenvoegsel, gc.achternaam as cachternaam
+	FROM project p
+	INNER JOIN projectrol_van_gebruiker pvg ON p.projectid = pvg.projectid
+	INNER JOIN gebruiker g ON pvg.gebruikersnaam = g.gebruikersnaam
+	INNER JOIN particulier part ON g.gebruikersnaam = part.gebruikersnaam
+    
+	where LOWER(part.voornaam) like @0
+	AND LOWER(part.achternaam) like @1
+	AND LOWER(g.gebruikersnaam) like @2
+	AND LOWER(g.mailadres) like @3
+	AND p.aangemaaktop between @4 AND @5
+    AND 
+) sub
+WHERE sub.RowIndex > @6 AND sub.RowIndex <= @7", Parameters);
             
             for (int i = 0; i < dt.Rows.Count; i++) 
             {
@@ -250,13 +287,38 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameterscount[4] = dpFiltAanmaakdatumVan.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
             Parameterscount[5] = dpFiltAanmaakdatumTot.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
 
-            searchCount = int.Parse(Classes.Database_Init.SQLQueryScaler(@"SELECT COUNT(*) countstuff FROM project p
+            /*
+             * SELECT COUNT(*) countstuff FROM project p
+INNER JOIN projectrol_van_gebruiker pvg on p.projectid = pvg.projectid
+INNER JOIN (
+	SELECT part.voornaam, part.achternaam, part.tussenvoegsel, geb.mailadres, geb.gebruikersnaam
+	FROM gebruiker geb
+	inner join particulier part on geb.gebruikersnaam = part.gebruikersnaam
+) g ON pvg.gebruikersnaam = g.gebruikersnaam
+where LOWER(g.voornaam) like '%'
+AND LOWER(g.achternaam) like '%'
+AND LOWER(g.gebruikersnaam) like '%'
+AND LOWER(g.mailadres) like '%'
+AND p.aangemaaktop between '2017-01-01' AND '2017-12-31'
+             * */
+            searchCount = int.Parse(Classes.Database_Init.SQLQueryScaler(/*@"SELECT COUNT(*) countstuff FROM project p
                                                     INNER JOIN (SELECT voornaam, achternaam, tussenvoegsel, mailadres, gebruikersnaam FROM gebruiker) g ON p.gebruikersnaam = g.gebruikersnaam 
                                                     where LOWER(g.voornaam) like @0 
                                                     AND LOWER(g.achternaam) like @1 
                                                     AND LOWER(p.gebruikersnaam) like @2 
                                                     AND LOWER(g.mailadres) like @3
-                                                    AND p.aangemaaktop between @4 AND @5", Parameterscount));
+                                                    AND p.aangemaaktop between @4 AND @5"*/@"SELECT COUNT(*) countstuff FROM project p
+INNER JOIN projectrol_van_gebruiker pvg on p.projectid = pvg.projectid
+INNER JOIN (
+	SELECT part.voornaam, part.achternaam, part.tussenvoegsel, geb.mailadres, geb.gebruikersnaam
+	FROM gebruiker geb
+	inner join particulier part on geb.gebruikersnaam = part.gebruikersnaam
+) g ON pvg.gebruikersnaam = g.gebruikersnaam
+where LOWER(g.voornaam) like @0
+AND LOWER(g.achternaam) like @1
+AND LOWER(g.gebruikersnaam) like @2
+AND LOWER(g.mailadres) like @3
+AND p.aangemaaktop between @4 AND @5", Parameterscount));
 
             //Don't have to refill database and change the startnumber if the startnumber+rowsPerPage is more than the searchCount
             if ((startNumber + rowsPerPage) >= searchCount)
@@ -284,6 +346,18 @@ namespace cgi_omgevingswet.Projectmanagement
 
             ProjectForm prForm = new ProjectForm(dgProject.SelectedItem as Classes.Projects);
             prForm.ShowDialog();
+            FillDataBase();
+        }
+        private void btnBehandelenBezwaar(object sender, RoutedEventArgs e)
+        {
+            if (dgProject.SelectedItem == null)
+            {
+                MessageBox.Show("U moet een item selecteren in de database om het item te kunnen wijzigen!");
+                return;
+            }
+
+            ComplaintsForm bzForm = new ComplaintsForm();
+            bzForm.ShowDialog();
             FillDataBase();
         }
     }

@@ -19,8 +19,8 @@ namespace cgi_omgevingswet.Classes
         /// <returns></returns>
         public static DataTable SQLQueryReader(string query, object[] parameters = null)
         {
-            string connectionstring = @"Server=localhost;Database=test123;Trusted_Connection=True;";
-                //@"server=84.83.30.240; user id=DatabaseFactory5; password = D$j.UiK4fF;";
+            string connectionstring = //@"Server=localhost;Database=test123;Trusted_Connection=True;";
+                @"server=84.83.30.240; user id=DatabaseFactory5; password = D$j.UiK4fF;";
 
             SqlConnection conn = new SqlConnection(connectionstring);
             SqlCommand cmd = conn.CreateCommand();
@@ -67,8 +67,8 @@ namespace cgi_omgevingswet.Classes
 
         public static String SQLQueryScaler(string query, object[] parameters = null)
         {
-            string connectionstring = @"Server=localhost;Database=test123;Trusted_Connection=True;";
-
+            string connectionstring = //@"Server=localhost;Database=test123;Trusted_Connection=True;";
+                @"server=84.83.30.240; user id=DatabaseFactory5; password = D$j.UiK4fF;";
             /* @"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=84.83.30.240)(PORT=1521))(CONNECT_DATA=(SID=orcl)));User Id=Omgevingswet;Password=D$j.UiK4fF;";*/
 
             SqlConnection conn = new SqlConnection(connectionstring);
@@ -113,8 +113,8 @@ namespace cgi_omgevingswet.Classes
 
         public static void SQLExecProcedure(string procedureName, object[] parameters = null, string[] parameternaam = null)
         {
-            string connectionstring = @"Server=localhost;Database=test123;Trusted_Connection=True;";
-
+            string connectionstring = //@"Server=localhost;Database=test123;Trusted_Connection=True;";
+                @"server=84.83.30.240; user id=DatabaseFactory5; password = D$j.UiK4fF;";
             /* @"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=84.83.30.240)(PORT=1521))(CONNECT_DATA=(SID=orcl)));User Id=Omgevingswet;Password=D$j.UiK4fF;";*/
 
             SqlConnection conn = new SqlConnection(connectionstring);
