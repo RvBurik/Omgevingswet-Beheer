@@ -23,8 +23,8 @@
         
         <DataGrid Grid.Row="2" x:Name="dgcoordinatorSelecteren">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="coördinator gebruikersnaam" Width="*" Binding="{Binding Path=gebruikersnaam}" />
-                <DataGridTextColumn Header="coördinator naam" Width="*" Binding="{Binding Path=coordinatornaam}" />
+                <DataGridTextColumn Header="coördinator gebruikersnaam" Width="*" Binding="{Binding Path=Gebruikersnaam}" />
+                <DataGridTextColumn Header="coördinator naam" Width="*" Binding="{Binding Path=_Projectcoordinator}" />
             </DataGrid.Columns>
         </DataGrid>
         

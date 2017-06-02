@@ -15,7 +15,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label FontSize="50" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Content="Project ... beheren" x:Name="lbl" Margin="0,5,0,0" />
+        <Label FontSize="50" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Content="Project ... beheren" x:Name="lblTitle" Margin="0,5,0,0" />
 
         <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="0,1,0,0" BorderBrush="Black" Margin="0,-5,-10,5"/>
         <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" Margin="0,0,0,-5" BorderBrush="Black" />
@@ -39,23 +39,23 @@
             </Grid.ColumnDefinitions>
 
             <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Content="Gebruikersnaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Content="Voornaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="2" Content="Tussenvoegsel:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="3" Content="Achternaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="4" Content="Mailadress:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="5" Content="Projectnaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="6" Content="Aanmaakdatum:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="7" Content="Bedrijfsnaam:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="4" Content="Voornaam:" x:Name="lblVoornaam" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="5" Content="Tussenvoegsel:" x:Name="lblTussenvoegsel" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="6" Content="Achternaam:" x:Name="lblAchternaam" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="3" Content="Mailadress:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Content="Project titel:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="2" Content="Aanmaakdatum:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="4" Content="Bedrijfsnaam:" x:Name="lblBedrijfsnaam" />
             <Label Style="{StaticResource CommonLabelSize}" Grid.Row="8" Content="Project Coördinator:" />
 
             <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Gebruikersnaam}" IsReadOnly="True" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="1"  Grid.Column="1" Text="{Binding Path=Voornaam}" IsReadOnly="True" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="2"  Grid.Column="1" Text="{Binding Path=Tussenvoegsel}" IsReadOnly="True" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="3"  Grid.Column="1" Text="{Binding Path=Achternaam}" IsReadOnly="True" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="4"  Grid.Column="1" Text="{Binding Path=Mailadres}" IsReadOnly="True" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="5"  Grid.Column="1" Text="{Binding Path=Gebruikersnaam}" IsReadOnly="True" />
-            <DatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding Path=Aangemaaktop}" Height="23" IsEnabled="False" />
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="7"  Grid.Column="1" Text="{Binding Path=Bedrijfsnaam}" x:Name="txtBedrijfsNaam" IsReadOnly="True"/>
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="4"  Grid.Column="1" Text="{Binding Path=Voornaam}" x:Name="txtVoornaam" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="5"  Grid.Column="1" Text="{Binding Path=Tussenvoegsel}" x:Name="txtTussenvoegsel" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="6"  Grid.Column="1" Text="{Binding Path=Achternaam}" x:Name="txtAchternaam" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="3"  Grid.Column="1" Text="{Binding Path=Mailadres}" IsReadOnly="True" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="1"  Grid.Column="1" Text="{Binding Path=ProjectTitel}" IsReadOnly="True" />
+            <DatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding Path=Aangemaaktop}" Height="23" IsEnabled="False" />
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="4"  Grid.Column="1" Text="{Binding Path=Bedrijfsnaam}" x:Name="txtBedrijfsNaam" IsReadOnly="True"/>
             <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="8"  Grid.Column="1" Text="{Binding Path=projectcoordinator._Projectcoordinator}" x:Name="txtProjectCoördinator" IsReadOnly="True"/>
             <Button Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Height="23" Content="Kies project coördinator" Margin="10,0,0,0" x:Name="btnGetProjectCoordinator" Click="btnGetProjectCoordinator_Click" />
         </Grid>
@@ -114,7 +114,7 @@
                     <RowDefinition Height="100" />
                 </Grid.RowDefinitions>
                 <Label FontSize="30" Content="Vergunningen" />
-                <DataGrid Grid.Row="1" x:Name="dgLicenses">
+                <DataGrid Grid.Row="1" x:Name="dgLicenses" ItemsSource="{Binding}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="*" Header="Vergunning" Binding="{Binding LicenseName}" />
                         <DataGridTextColumn Width="*" Header="Status" Binding="{Binding Status}" />
@@ -129,9 +129,9 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Vergunning&#10;openen" />
+                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Vergunning&#10;openen" x:Name="btnOpenLicense" Click="btnOpenLicense_Click" />
                     <Button Style="{StaticResource CommonButtonSize}" Grid.Column="2" Content="Vergunning&#10;toevoegen" x:Name="btnAddLicense" Click="btnAddLicense_Click" />
-                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="4" Content="Vergunning&#10;verwijderen" />
+                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="4" Content="Vergunning&#10;verwijderen" x:Name="btnDeleteLicense" Click="btnDeleteLicense_Click" />
 
                 </Grid>
             </Grid>

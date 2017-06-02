@@ -77,7 +77,7 @@ namespace cgi_omgevingswet.Projectmanagement.Licenses
                 RequestedOn = DateTime.Today
             };
 
-            ProjectForm.GetLicense(license);
+            ProjectForm.GetLicenses(license);
         }
     }
 }

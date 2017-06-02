@@ -23,5 +23,7 @@ namespace cgi_omgevingswet.Classes
         public string Achternaam { get; set; }
         public string Mailadres { get; set; }
         public string Bedrijfsnaam { get; set; }
+        public string ProjectTitel { get; set; }
+        public string kvknummer { get; set; }
     }
 }
