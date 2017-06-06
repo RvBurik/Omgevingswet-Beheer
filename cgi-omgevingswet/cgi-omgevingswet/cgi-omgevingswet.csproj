@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Classes\Complaint.cs" />
     <Compile Include="Classes\Database_Init.cs" />
+    <Compile Include="Classes\gezaghebber.cs" />
     <Compile Include="Classes\License.cs" />
     <Compile Include="Classes\Person.cs" />
     <Compile Include="Classes\Project.cs" />
@@ -95,6 +96,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Projectmanagement\toevoegen_gezaghebber.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Projectmanagement\Complaints\ComplaintsForm.xaml.cs">
@@ -114,6 +119,9 @@
     </Compile>
     <Compile Include="Projectmanagement\SelectProjectHelper\SelectProjectHelper.xaml.cs">
       <DependentUpon>SelectProjectHelper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Projectmanagement\toevoegen_gezaghebber.xaml.cs">
+      <DependentUpon>toevoegen_gezaghebber.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

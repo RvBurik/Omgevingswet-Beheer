@@ -37,7 +37,7 @@ namespace cgi_omgevingswet.Projectmanagement
             GetLicenses += GetLicense;
 
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
-           // fillTelephoneNumberList();
+            // fillTelephoneNumberList();
             fillLicenseDataGrid();
 
             if (project.Bedrijfsnaam == string.Empty)
@@ -68,7 +68,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.","Afsluiten", MessageBoxButton.YesNo);
+            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.", "Afsluiten", MessageBoxButton.YesNo);
 
             if (MbResult == MessageBoxResult.Yes)
                 this.Close();
@@ -156,7 +156,7 @@ namespace cgi_omgevingswet.Projectmanagement
             DataTable dt = Classes.Database_Init.SQLQueryReader("select * from vergunning where projectid = @0", parameters);
 
             for (int i = 0; i < dt.Rows.Count; i++)
-			{
+            {
                 var Licenses = new Classes.License
                 {
                     VergunningsID = (int)dt.Rows[i]["VERGUNNINGSID"],
@@ -166,9 +166,9 @@ namespace cgi_omgevingswet.Projectmanagement
                     RequestedOn = Convert.ToDateTime(dt.Rows[i]["DATUMAANVRAAG"])//ik moet de tijd wegknippen
                 };
 
-              //  dgLicenses.Items.Add(Licenses);
+                //  dgLicenses.Items.Add(Licenses);
                 project.licenses.Add(Licenses);
-			}
+            }
 
             dgLicenses.ItemsSource = project.licenses;
 
@@ -267,6 +267,12 @@ namespace cgi_omgevingswet.Projectmanagement
         {
             Licenses.AddLicense OpenAddLicense = new Licenses.AddLicense();
             OpenAddLicense.ShowDialog();
+        }
+
+        private void btnToekennen_Click(object sender, RoutedEventArgs e)
+        {
+            toevoegen_gezaghebber ToevoegenGezaghebber = new toevoegen_gezaghebber();
+            ToevoegenGezaghebber.ShowDialog();
         }
 
         private void btnDeleteLicense_Click(object sender, RoutedEventArgs e)

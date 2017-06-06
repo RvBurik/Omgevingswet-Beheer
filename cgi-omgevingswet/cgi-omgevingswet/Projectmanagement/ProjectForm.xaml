@@ -150,15 +150,14 @@
                     </Grid.RowDefinitions>
                     <Label FontSize="30" Content="Bevoegde gezagen" />
                     <DataGrid Grid.Row="1"></DataGrid>
-                    <Grid Margin="10" Grid.Row="2" HorizontalAlignment="Right">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="80" />
-                        </Grid.ColumnDefinitions>
+                        <Grid Margin="10" Grid.Row="2" HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
                         <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Toekennen" />
                         <Button Style="{StaticResource CommonButtonSize}" Grid.Column="2" Content="Verwijderen" />
-
                     </Grid>
                 </Grid>
             </ScrollViewer>
