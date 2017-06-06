@@ -150,7 +150,7 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Toekennen" />
+                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Toekennen"  x:Name="btnToekennen" Click="btnToekennen_Click"/>
                     <Button Style="{StaticResource CommonButtonSize}" Grid.Column="2" Content="Verwijderen" />
 
                 </Grid>

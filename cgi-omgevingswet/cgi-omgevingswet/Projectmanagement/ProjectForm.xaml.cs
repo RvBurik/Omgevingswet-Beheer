@@ -200,5 +200,11 @@ namespace cgi_omgevingswet.Projectmanagement
             Licenses.AddLicense OpenAddLicense = new Licenses.AddLicense();
             OpenAddLicense.ShowDialog();
         }
+
+        private void btnToekennen_Click(object sender, RoutedEventArgs e)
+        {
+            toevoegen_gezaghebber ToevoegenGezaghebber = new toevoegen_gezaghebber();
+            ToevoegenGezaghebber.ShowDialog();
+        }
     }
 }
