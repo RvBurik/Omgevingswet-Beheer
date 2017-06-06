@@ -1,8 +1,8 @@
 ﻿<Window x:Class="cgi_omgevingswet.Projectmanagement.Licenses.LicenseForm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="LicenseForm" Height="600" Width="400">
-    <Grid>
+        Title="LicenseForm" Height="800" Width="450">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
             <RowDefinition Height="*" />
@@ -12,11 +12,63 @@
         
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="200" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="90" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Vergunningsnaam: " />
+                <TextBox Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+
+                <Label Grid.Row="1" Content="Datum aanvraag: " />
+                <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+                
+                <Label Grid.Row="2" Content="Datum uitgave: " />
+                <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+                
+                <Label Grid.Row="3" Content="Datum verloop: " />
+                <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+            </Grid>
             
-            <Label Content="Vergunningsnaam: " />
+            <Grid Grid.Row="1">
+                <Label Content="Omschrijving:" />
+                <TextBox Margin="0,30,0,0" />
+            </Grid>
+            
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Label Content="Status: " />
+
+                <Button Margin="0,0,5,0" Grid.Row="1" Grid.Column="0" Content="Goedgekeurd" />
+                <Button Margin="5,0,5,0" Grid.Row="1" Grid.Column="1" Content="Afgekeurd" />
+                <Button Margin="5,0,0,0" Grid.Row="1" Grid.Column="2" Content="In behandeling" />
+            </Grid>
         </Grid>
     </Grid>
 </Window>

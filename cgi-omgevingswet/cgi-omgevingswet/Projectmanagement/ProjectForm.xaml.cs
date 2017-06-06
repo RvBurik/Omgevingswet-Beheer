@@ -21,10 +21,11 @@ namespace cgi_omgevingswet.Projectmanagement
     public partial class ProjectForm : Window
     {
         public static SelectProjectHelper.SelectProjectHelper.GetCoordinator Getcoordinator;
-        public static Licenses.AddLicense.GetLicense GetLicense;
+        public static Licenses.AddLicense.GetLicense GetLicenses;
         private Classes.Projects project;
         private List<Classes.License> newlyAddedLicense = new List<Classes.License>();
         private List<Classes.License> DeletedLicense = new List<Classes.License>();
+        private List<Classes.License> UpdatedLicense = new List<Classes.License>();
 
         public ProjectForm(Classes.Projects project)
         {
@@ -33,13 +34,41 @@ namespace cgi_omgevingswet.Projectmanagement
             this.project = project;
 
             Getcoordinator += Fillcoordinatortextbox;
-            GetLicense += FillLicense;
-            fillTelephoneNumberList();
+            GetLicenses += GetLicense;
+
+            lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
+           // fillTelephoneNumberList();
+            fillLicenseDataGrid();
+
+            if (project.Bedrijfsnaam == string.Empty)
+            {
+                txtBedrijfsNaam.Visibility = System.Windows.Visibility.Hidden;
+                txtVoornaam.Visibility = System.Windows.Visibility.Visible;
+                txtTussenvoegsel.Visibility = System.Windows.Visibility.Visible;
+                txtAchternaam.Visibility = System.Windows.Visibility.Visible;
+
+                lblAchternaam.Visibility = System.Windows.Visibility.Visible;
+                lblVoornaam.Visibility = System.Windows.Visibility.Visible;
+                lblTussenvoegsel.Visibility = System.Windows.Visibility.Visible;
+                lblBedrijfsnaam.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else if (project.Bedrijfsnaam != string.Empty)
+            {
+                txtVoornaam.Visibility = System.Windows.Visibility.Hidden;
+                txtTussenvoegsel.Visibility = System.Windows.Visibility.Hidden;
+                txtAchternaam.Visibility = System.Windows.Visibility.Hidden;
+                txtBedrijfsNaam.Visibility = System.Windows.Visibility.Visible;
+
+                lblAchternaam.Visibility = System.Windows.Visibility.Hidden;
+                lblVoornaam.Visibility = System.Windows.Visibility.Hidden;
+                lblTussenvoegsel.Visibility = System.Windows.Visibility.Hidden;
+                lblBedrijfsnaam.Visibility = System.Windows.Visibility.Visible;
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.","afsluiten", MessageBoxButton.YesNo);
+            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.","Afsluiten", MessageBoxButton.YesNo);
 
             if (MbResult == MessageBoxResult.Yes)
                 this.Close();
@@ -51,16 +80,17 @@ namespace cgi_omgevingswet.Projectmanagement
             SelectProject.ShowDialog();
         }
 
-        private void Fillcoordinatortextbox(string coordinator, string gebruikersnrolid)
+        private void Fillcoordinatortextbox(string coordinator, string gebruikersnaam)
         {
             txtProjectCoördinator.Text = coordinator;
-            project.projectcoordinator.ProjectcoordinatorID = gebruikersnrolid;
+            project.projectcoordinator.Gebruikersnaam = gebruikersnaam;
         }
 
-        private void FillLicense(Classes.License license)
+        private void GetLicense(Classes.License license)
         {
             newlyAddedLicense.Add(license);
-            dgLicenses.Items.Add(license);
+            project.licenses.Add(license);
+            refreshLicenseDatagrid();
         }
 
         private void fillTelephoneNumberList()
@@ -106,6 +136,45 @@ namespace cgi_omgevingswet.Projectmanagement
             }
         }
 
+        private void refreshLicenseDatagrid()
+        {
+            dgLicenses.Items.Refresh();
+        }
+
+        private void fillLicenseDataGrid()
+        {
+            //dit kan ook nog veranderen
+            object[] parameters = new object[1];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+            }
+
+            parameters[0] = project.ProjectID;
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader("select * from vergunning where projectid = @0", parameters);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+			{
+                var Licenses = new Classes.License
+                {
+                    VergunningsID = (int)dt.Rows[i]["VERGUNNINGSID"],
+                    LicenseName = dt.Rows[i]["VERGUNNINGSNAAM"].ToString(),
+                    Description = dt.Rows[i]["OMSCHRIJVING"].ToString(),
+                    Status = dt.Rows[i]["STATUS"].ToString(),
+                    RequestedOn = Convert.ToDateTime(dt.Rows[i]["DATUMAANVRAAG"])//ik moet de tijd wegknippen
+                };
+
+              //  dgLicenses.Items.Add(Licenses);
+                project.licenses.Add(Licenses);
+			}
+
+            dgLicenses.ItemsSource = project.licenses;
+
+            refreshLicenseDatagrid();
+        }
+
         private void saveCoordinator()
         {
             int count = 2;
@@ -119,10 +188,10 @@ namespace cgi_omgevingswet.Projectmanagement
             }
 
             parameters[0] = project.ProjectID;
-            parameters[1] = project.projectcoordinator.ProjectcoordinatorID;
+            parameters[1] = project.projectcoordinator.Gebruikersnaam;
 
             parametername[0] = "@_ProjectId";
-            parametername[1] = "@_gebruikersrolid";
+            parametername[1] = "@_Gebruikersnaam";
 
             Classes.Database_Init.SQLExecProcedure("Spoc_Set_ProjectCoordinator", parameters, parametername);
         }
@@ -160,7 +229,7 @@ namespace cgi_omgevingswet.Projectmanagement
             if (DeletedLicense.Count > 0)
             {
                 int count = 1;
-                for (int i = 0; i < newlyAddedLicense.Count; i++)
+                for (int i = 0; i < DeletedLicense.Count; i++)
                 {
                     object[] parameters = new object[count];
                     string[] parametername = new string[count];
@@ -168,10 +237,9 @@ namespace cgi_omgevingswet.Projectmanagement
                     for (int j = 0; j < parameters.Length; j++)
                     {
                         parameters[j] = new object();
-                        parametername[j] = string.Empty;
                     }
 
-                    parameters[0] = newlyAddedLicense[i].LicenseName;
+                    parameters[0] = DeletedLicense[i].VergunningsID;
 
                     parametername[0] = "@_VergunningsID";
 
@@ -205,6 +273,40 @@ namespace cgi_omgevingswet.Projectmanagement
         {
             toevoegen_gezaghebber ToevoegenGezaghebber = new toevoegen_gezaghebber();
             ToevoegenGezaghebber.ShowDialog();
+        }
+
+        private void btnDeleteLicense_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgLicenses.SelectedItem == null)
+            {
+                MessageBox.Show("U heeft geen vergunning geselecteerd om te verwijderen!");
+                return;
+            }
+
+            Classes.License tempLic = (dgLicenses.SelectedItem as Classes.License);
+
+            var CountDeletedInNewly = newlyAddedLicense.Count(s => s == tempLic);
+
+            if (CountDeletedInNewly > 0)
+            {
+                newlyAddedLicense.Remove(tempLic);
+            }
+
+            DeletedLicense.Add(tempLic);
+            project.licenses.Remove(tempLic);
+            refreshLicenseDatagrid();
+        }
+
+        private void btnOpenLicense_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnOpenComplaint_Click(object sender, RoutedEventArgs e)
+        {
+            Classes.Complaint bezwaar = new Classes.Complaint();
+            Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(bezwaar);
+            OpenComplaint.ShowDialog();
         }
     }
 }

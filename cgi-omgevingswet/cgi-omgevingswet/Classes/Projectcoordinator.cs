@@ -12,6 +12,6 @@ namespace cgi_omgevingswet.Classes
     public class Projectcoordinator
     {
         public string _Projectcoordinator { get; set; }
-        public string ProjectcoordinatorID { get; set; }
+        public string Gebruikersnaam { get; set; }
     }
 }

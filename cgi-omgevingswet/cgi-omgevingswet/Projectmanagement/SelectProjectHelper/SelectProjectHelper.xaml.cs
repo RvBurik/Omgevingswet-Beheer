@@ -41,36 +41,27 @@ namespace cgi_omgevingswet.Projectmanagement.SelectProjectHelper
 
             parameters[0] = "%" + txtFiltCoordinator.Text + "%";
 
-            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT *, 
-                                                                (SELECT voornaam + ' ' + tussenvoegsel + ' ' + achternaam as naam from gebruiker where gebruiker.gebruikersnaam = r.gebruikersnaam) 
-                                                                as naam FROM ROLLENVANGEBRUIKER r 
-                                                                where rol = 'Projectcoordinator'");
+            DataTable dt = Classes.Database_Init.SQLQueryReader(@"select * from gemeente_gebruiker g
+                                            inner join (select voornaam, tussenvoegsel, achternaam, gebruikersnaam as part_gebruiker from PARTICULIER) p ON g.gebruikersnaam = p.part_gebruiker
+                                             where rechtnaam = 'coördinator'");
 
             for (int i = 0; i < dt.Rows.Count; i++)
 			{
-                var coordinatoren = new coordinator
+                var coordinatoren = new Classes.Projectcoordinator
                 {
-                    coordinatornaam = dt.Rows[i]["naam"].ToString(),
-                    gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString(),
-                    gebruikersrolid = dt.Rows[i]["gebruikersrolid"].ToString()
+                    _Projectcoordinator = dt.Rows[i]["voornaam"].ToString() + " " + dt.Rows[i]["tussenvoegsel"].ToString() + " " +  dt.Rows[i]["achternaam"].ToString(),
+                    Gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString()
                 };
 
                 dgcoordinatorSelecteren.Items.Add(coordinatoren);
 			}
         }
 
-        public class coordinator
-        {
-            public string coordinatornaam { get; set; }
-            public string gebruikersnaam { get; set; }
-            public string gebruikersrolid { get; set; }
-        }
-
         private void btnSelect_Click(object sender, RoutedEventArgs e)
         {
             if (dgcoordinatorSelecteren.SelectedItem != null)
             {
-                ProjectForm.Getcoordinator((dgcoordinatorSelecteren.SelectedItem as coordinator).coordinatornaam, (dgcoordinatorSelecteren.SelectedItem as coordinator).gebruikersrolid);
+                ProjectForm.Getcoordinator((dgcoordinatorSelecteren.SelectedItem as Classes.Projectcoordinator)._Projectcoordinator, (dgcoordinatorSelecteren.SelectedItem as Classes.Projectcoordinator).Gebruikersnaam);
                 Close();
             }
         }

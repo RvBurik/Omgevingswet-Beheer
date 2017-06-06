@@ -15,7 +15,8 @@ using System.Windows.Shapes;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Threading;
-
+using cgi_omgevingswet.Projectmanagement.Complaints;
+using cgi_omgevingswet.Classes;
 
 namespace cgi_omgevingswet.Projectmanagement
 {
@@ -61,6 +62,17 @@ namespace cgi_omgevingswet.Projectmanagement
 
             CoolDownFillDataBase(50);
             startNumber = 0;
+
+            if (rbtnBedrijf.IsChecked.Value)
+            {
+                dgBedrijf.Visibility = System.Windows.Visibility.Visible;
+                dgParticulier.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else if (rbtnParticulier.IsChecked.Value)
+            {
+                dgBedrijf.Visibility = System.Windows.Visibility.Hidden;
+                dgParticulier.Visibility = System.Windows.Visibility.Visible;
+            }
         }
 
         private void CoolDownFillDataBase(int Miniseconds)
@@ -89,7 +101,8 @@ namespace cgi_omgevingswet.Projectmanagement
         /// </summary>
         private void FillDataBase()
         {
-            dgProject.Items.Clear();
+            dgProjectParticulier.Items.Clear();
+            dgProjectBedrijf.Items.Clear();
 
             object[] Parameters = new object[8];
 
@@ -107,19 +120,44 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameters[6] = startNumber;
             Parameters[7] = (startNumber + rowsPerPage);
             //verbetering is om deze queries de volgende keer in kleine stukken te hakken voor de informatie behoefte dat ik nodig heb.
-            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex, 
-                                                        CONVERT(VARCHAR(10),p.aangemaaktop,103) aangemaaktop, p.gebruikersnaam, p.projectid, p.werkzaamheid, 
-                                                        g.voornaam, g.achternaam, g.tussenvoegsel, g.mailadres, gc.voornaam as cvoornaam, gc.tussenvoegsel as ctusssenvoegsel, gc.achternaam as cachternaam, rvg.Gebruikersrolid FROM project p
-                                                        INNER JOIN (SELECT voornaam, achternaam, tussenvoegsel, mailadres, gebruikersnaam FROM gebruiker) g ON p.gebruikersnaam = g.gebruikersnaam
-                                                        INNER JOIN (SELECT GebruikersRolID, projectid FROM GEBRUIKERSROLLENBIJPROJECT) grp ON grp.projectid = p.projectid
-                                                        INNER JOIN (SELECT GebruikersRolID, gebruikersnaam FROM ROLLENVANGEBRUIKER) rvg ON grp.GebruikersRolID = rvg.GebruikersRolID
-                                                        INNER JOIN (SELECT gebruikersnaam, voornaam, tussenvoegsel, achternaam FROM GEBRUIKER) gc ON gc.gebruikersnaam = rvg.gebruikersnaam
-                                                        where LOWER(g.voornaam) like @0
-                                                        AND LOWER(g.achternaam) like @1
-                                                        AND LOWER(p.gebruikersnaam) like @2
-                                                        AND LOWER(g.mailadres) like @3
-                                                        AND p.aangemaaktop between @4 AND @5) sub 
-                                                        WHERE sub.RowIndex > @6 AND sub.RowIndex <= @7", Parameters);
+            string sqlquery =  @"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY p.projectid) AS RowIndex, 
+                                                    p.PROJECTID, CONVERT(VARCHAR(10),p.AANGEMAAKTOP, 103) aangemaaktop, p.WERKZAAMHEID, p.PROJECTTITEL,
+                                                    g.GEBRUIKERSNAAM, g.MAILADRES, ";
+
+            if (rbtnParticulier.IsChecked.Value)
+            {
+                sqlquery += @" pa.VOORNAAM, pa.TUSSENVOEGSEL, pa.ACHTERNAAM";
+            }
+            else if (rbtnBedrijf.IsChecked.Value)
+            {
+                sqlquery += @" BE.bedrijfsnaam, BE.kvknummer";
+            }
+
+            sqlquery += @"
+                        FROM project p
+                        INNER JOIN (SELECT PROJECTID, GEBRUIKERSNAAM, rolnaam FROM PROJECTROL_VAN_GEBRUIKER) PvG ON p.PROJECTID = pvg.PROJECTID AND pvg.rolnaam != 'Gemeente'
+                        INNER JOIN (SELECT GEBRUIKERSNAAM, MAILADRES FROM GEBRUIKER) g on pvg.GEBRUIKERSNAAM = g.GEBRUIKERSNAAM ";
+
+            if (rbtnParticulier.IsChecked.Value)
+            {
+                sqlquery += @" INNER JOIN (SELECT VOORNAAM, TUSSENVOEGSEL, ACHTERNAAM, GEBRUIKERSNAAM FROM PARTICULIER) pa on g.GEBRUIKERSNAAM = pa.GEBRUIKERSNAAM
+                            WHERE LOWER(pa.voornaam) like @0
+                            AND LOWER(pa.achternaam) like @1 ";
+            }
+            else if (rbtnBedrijf.IsChecked.Value)
+            {
+                sqlquery += @" INNER JOIN BEDRIJF BE on g.GEBRUIKERSNAAM = BE.GEBRUIKERSNAAM 
+                            WHERE LOWER(BE.bedrijfsnaam) like @0
+                            AND LOWER(BE.kvknummer) like @1 ";
+            }
+
+            sqlquery += @"
+            AND LOWER(g.gebruikersnaam) like @2
+            AND LOWER(g.mailadres) like @3
+            AND p.aangemaaktop between @4 AND @5) sub 
+            WHERE sub.RowIndex > @6 AND sub.RowIndex <= @7";
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader(sqlquery, Parameters);
             
             for (int i = 0; i < dt.Rows.Count; i++) 
             {
@@ -129,34 +167,56 @@ namespace cgi_omgevingswet.Projectmanagement
                     Gebruikersnaam = dt.Rows[i]["Gebruikersnaam"].ToString(),
                     Aangemaaktop = Convert.ToDateTime(dt.Rows[i]["Aangemaaktop"].ToString()),
                     Werkzaamheid = dt.Rows[i]["Werkzaamheid"].ToString(),
-                    Voornaam = dt.Rows[i]["voornaam"].ToString(),
-                    Tussenvoegsel = dt.Rows[i]["tussenvoegsel"].ToString(),
-                    Achternaam = dt.Rows[i]["achternaam"].ToString(),
-                    Volledigenaam = dt.Rows[i]["voornaam"].ToString() + " " + dt.Rows[i]["tussenvoegsel"].ToString() + " " + dt.Rows[i]["achternaam"].ToString(),
+                   
                     Mailadres = dt.Rows[i]["mailadres"].ToString(),
-                    projectcoordinator = new Classes.Projectcoordinator{
-                        _Projectcoordinator = dt.Rows[i]["cvoornaam"].ToString() + " " + dt.Rows[i]["ctusssenvoegsel"].ToString() + " " + dt.Rows[i]["cachternaam"].ToString(),
-                        ProjectcoordinatorID = dt.Rows[i]["Gebruikersrolid"].ToString()
-                    }
+                    ProjectTitel = dt.Rows[i]["PROJECTTITEL"].ToString(),
+                    licenses = new List<Classes.License>(),
+                    projectcoordinator = new Classes.Projectcoordinator()
                 };
 
-                //Dit gaat nog zekerweten veranderd worden met de nieuwe database structuur
-                object[] Parametersbedrijf = new object[1];
+                if (rbtnParticulier.IsChecked.Value)
+                {
+                    data.Voornaam = dt.Rows[i]["voornaam"].ToString();
+                    data.Tussenvoegsel = dt.Rows[i]["tussenvoegsel"].ToString();
+                    data.Achternaam = dt.Rows[i]["achternaam"].ToString();
+                    data.Volledigenaam = dt.Rows[i]["voornaam"].ToString() + " " + dt.Rows[i]["tussenvoegsel"].ToString() + " " + dt.Rows[i]["achternaam"].ToString();
+                    data.Bedrijfsnaam = string.Empty;
+                }
+                else if (rbtnBedrijf.IsChecked.Value)
+                {
+                    data.Bedrijfsnaam = dt.Rows[i]["bedrijfsnaam"].ToString();
+                    data.kvknummer = dt.Rows[i]["kvknummer"].ToString();
 
-                for (int k = 0; k < Parametersbedrijf.Length; k++)
-			    {
-                    Parametersbedrijf[k] = new object();
-			    }
+                }
 
-                Parametersbedrijf[0] = data.Gebruikersnaam;
+                object[] ParametersCoordinator = new object[1];
 
-                DataTable dtGetBedrijf = Classes.Database_Init.SQLQueryReader(@"SELECT bedrijfsnaam FROM BEDRIJF
-                WHERE kvknummer in (SELECT kvknummer from werknemer where gebruikersnaam = @0)", Parametersbedrijf);
+                for (int k = 0; k < ParametersCoordinator.Length; k++)
+                {
+                    ParametersCoordinator[k] = new object();
+                }
 
-                if (dtGetBedrijf.Rows.Count > 0) data.Bedrijfsnaam = dtGetBedrijf.Rows[0][0].ToString();
-                else data.Bedrijfsnaam = string.Empty;
+                ParametersCoordinator[0] = data.ProjectID;
 
-                dgProject.Items.Add(data);
+                DataTable dtGetCoordinator = Classes.Database_Init.SQLQueryReader(@"SELECT voornaam, tussenvoegsel, achternaam, gebruikersnaam FROM PARTICULIER WHERE GEBRUIKERSNAAM in (
+                                                                                    SELECT GEBRUIKERSNAAM from GEMEENTE_GEBRUIKER WHERE GEBRUIKERSNAAM in (
+                                                                                    SELECT GEBRUIKERSNAAM FROM PROJECTROL_VAN_GEBRUIKER WHERE PROJECTID = @0 AND rolnaam = 'Gemeente') 
+                                                                                    AND RECHTNAAM = 'coördinator')", ParametersCoordinator);
+                if (dtGetCoordinator.Rows.Count > 0)
+                    data.projectcoordinator = new Classes.Projectcoordinator
+                    {
+                        _Projectcoordinator = dtGetCoordinator.Rows[0]["voornaam"].ToString() + " " + dtGetCoordinator.Rows[0]["tussenvoegsel"].ToString() + " " + dtGetCoordinator.Rows[0]["achternaam"].ToString(),
+                       Gebruikersnaam = dtGetCoordinator.Rows[0]["gebruikersnaam"].ToString()
+                    };
+
+                if (rbtnParticulier.IsChecked.Value)
+                {
+                    dgProjectParticulier.Items.Add(data);
+                }
+                else if (rbtnBedrijf.IsChecked.Value)
+                {
+                    dgProjectBedrijf.Items.Add(data);
+                }
             }
         }
 
@@ -250,6 +310,20 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameterscount[4] = dpFiltAanmaakdatumVan.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
             Parameterscount[5] = dpFiltAanmaakdatumTot.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
 
+            /*
+             * SELECT COUNT(*) countstuff FROM project p
+INNER JOIN projectrol_van_gebruiker pvg on p.projectid = pvg.projectid
+INNER JOIN (
+	SELECT part.voornaam, part.achternaam, part.tussenvoegsel, geb.mailadres, geb.gebruikersnaam
+	FROM gebruiker geb
+	inner join particulier part on geb.gebruikersnaam = part.gebruikersnaam
+) g ON pvg.gebruikersnaam = g.gebruikersnaam
+where LOWER(g.voornaam) like '%'
+AND LOWER(g.achternaam) like '%'
+AND LOWER(g.gebruikersnaam) like '%'
+AND LOWER(g.mailadres) like '%'
+AND p.aangemaaktop between '2017-01-01' AND '2017-12-31'
+             * */
             searchCount = int.Parse(Classes.Database_Init.SQLQueryScaler(@"SELECT COUNT(*) countstuff FROM project p
                                                     INNER JOIN (SELECT voornaam, achternaam, tussenvoegsel, mailadres, gebruikersnaam FROM gebruiker) g ON p.gebruikersnaam = g.gebruikersnaam 
                                                     where LOWER(g.voornaam) like @0 
@@ -276,14 +350,62 @@ namespace cgi_omgevingswet.Projectmanagement
         private void btnWijzigen_Click(object sender, RoutedEventArgs e)
         {
 
-            if (dgProject.SelectedItem == null)
+            if (dgProjectParticulier.SelectedItem == null && dgProjectBedrijf.SelectedItem == null)
             {
                 MessageBox.Show("U moet een item selecteren in de database om het item te kunnen wijzigen!");
                 return;
             }
 
-            ProjectForm prForm = new ProjectForm(dgProject.SelectedItem as Classes.Projects);
+            Classes.Projects selectedproj = new Classes.Projects();
+            if (dgProjectParticulier.SelectedItem != null)
+            {
+                selectedproj = dgProjectParticulier.SelectedItem as Classes.Projects;
+            }
+            else if (dgProjectBedrijf.SelectedItem != null)
+            {
+                selectedproj = dgProjectBedrijf.SelectedItem as Classes.Projects;
+            }
+
+            ProjectForm prForm = new ProjectForm(selectedproj);
             prForm.ShowDialog();
+            FillDataBase();
+        }
+
+        private void rbtnParticulier_Checked(object sender, RoutedEventArgs e)
+        {
+            if (dgBedrijf != null && dgParticulier != null)
+            {
+                dgBedrijf.Visibility = System.Windows.Visibility.Hidden;
+                dgParticulier.Visibility = System.Windows.Visibility.Visible;
+                fltAchternaamOrKvkNummer.Content = "Achternaam: ";
+                fltVoornaamOrBedrijfsnaam.Content = "Voornaam: ";
+                FillDataBase();
+            }
+        }
+
+        private void rbtnBedrijf_Checked(object sender, RoutedEventArgs e)
+        {
+            if (dgBedrijf != null && dgParticulier != null)
+            {
+                dgBedrijf.Visibility = System.Windows.Visibility.Visible;
+                dgParticulier.Visibility = System.Windows.Visibility.Hidden;
+                fltAchternaamOrKvkNummer.Content = "Kvknummer: ";
+                fltVoornaamOrBedrijfsnaam.Content = "Bedrijfsnaam: ";
+                FillDataBase();
+            }
+        }
+
+        private void btnBehandelenBezwaar(object sender, RoutedEventArgs e)
+        {
+            if (dgProjectParticulier.SelectedItem == null && dgProjectBedrijf.SelectedItem == null)
+            {
+                MessageBox.Show("U moet een item selecteren in de database om het item te kunnen wijzigen!");
+                return;
+            }
+
+            Complaint bezwaar = new Complaint();
+            ComplaintsForm bzForm = new ComplaintsForm(bezwaar);
+            bzForm.ShowDialog();
             FillDataBase();
         }
     }

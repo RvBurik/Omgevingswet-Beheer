@@ -8,6 +8,7 @@ namespace cgi_omgevingswet.Classes
 {
     public class License
     {
+        public int VergunningsID { get; set; }
         public string LicenseName { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
