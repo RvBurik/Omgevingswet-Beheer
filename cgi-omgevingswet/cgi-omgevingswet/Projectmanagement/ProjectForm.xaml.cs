@@ -68,7 +68,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.","afsluiten", MessageBoxButton.YesNo);
+            MessageBoxResult MbResult = MessageBox.Show("Weet je zeker dat u dit scherm wilt verlaten zonder enige informatie aan te passen? Alle informatie ingevuld in dit scherm gaat verloren.","Afsluiten", MessageBoxButton.YesNo);
 
             if (MbResult == MessageBoxResult.Yes)
                 this.Close();
@@ -294,6 +294,13 @@ namespace cgi_omgevingswet.Projectmanagement
         private void btnOpenLicense_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void btnOpenComplaint_Click(object sender, RoutedEventArgs e)
+        {
+            Classes.Complaint bezwaar = new Classes.Complaint();
+            Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(bezwaar);
+            OpenComplaint.ShowDialog();
         }
     }
 }

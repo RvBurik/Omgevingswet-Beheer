@@ -102,7 +102,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Grid.Row="3" Content="Bezwaar&#10;openen" />
+                    <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Grid.Row="3" Content="Bezwaar&#10;openen" x:Name="btnOpenComplaint" Click="btnOpenComplaint_Click"/>
 
                 </Grid>
             </Grid>
