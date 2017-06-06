@@ -310,20 +310,6 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameterscount[4] = dpFiltAanmaakdatumVan.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
             Parameterscount[5] = dpFiltAanmaakdatumTot.SelectedDate.Value.Date.ToString("yyyy-MM-dd");
 
-            /*
-             * SELECT COUNT(*) countstuff FROM project p
-INNER JOIN projectrol_van_gebruiker pvg on p.projectid = pvg.projectid
-INNER JOIN (
-	SELECT part.voornaam, part.achternaam, part.tussenvoegsel, geb.mailadres, geb.gebruikersnaam
-	FROM gebruiker geb
-	inner join particulier part on geb.gebruikersnaam = part.gebruikersnaam
-) g ON pvg.gebruikersnaam = g.gebruikersnaam
-where LOWER(g.voornaam) like '%'
-AND LOWER(g.achternaam) like '%'
-AND LOWER(g.gebruikersnaam) like '%'
-AND LOWER(g.mailadres) like '%'
-AND p.aangemaaktop between '2017-01-01' AND '2017-12-31'
-             * */
             searchCount = int.Parse(Classes.Database_Init.SQLQueryScaler(@"SELECT COUNT(*) countstuff FROM project p
                                                     INNER JOIN (SELECT voornaam, achternaam, tussenvoegsel, mailadres, gebruikersnaam FROM gebruiker) g ON p.gebruikersnaam = g.gebruikersnaam 
                                                     where LOWER(g.voornaam) like @0 

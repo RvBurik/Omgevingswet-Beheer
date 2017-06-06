@@ -62,7 +62,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
             Mailadres.Clear();
             Voornaam.Add(dt.Rows[0]["voornaam"]);
             */
-            fillTelephoneNumberList();
+            //ftelefillTelephoneNumberList();
 
 
             for (int i = 0; i < dtProject.Rows.Count; i++)
@@ -73,7 +73,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
                     Gebruikersnaam = dtProject.Rows[i]["g.gebruikersnaam"].ToString(),
                     Aangemaaktop = Convert.ToDateTime(dtProject.Rows[i]["p.aangemaaktop"].ToString()),
                     Werkzaamheid = dtProject.Rows[i]["g.werkzaamheid"].ToString(),
-                    Volledigenaam = dtProject.Rows[i]["voornaam"].ToString() + " " + dt.Rows[i]["tussenvoegsel"].ToString() + " " + dt.Rows[i]["achternaam"].ToString(),
+                    Volledigenaam = dtProject.Rows[i]["voornaam"].ToString() + " " + dtProject.Rows[i]["tussenvoegsel"].ToString() + " " + dtProject.Rows[i]["achternaam"].ToString(),
                     Voornaam = dtProject.Rows[i]["part.voornaam"].ToString(),
                     Tussenvoegsel = dtProject.Rows[i]["part.tussenvoegsel"].ToString(),
                     Achternaam = dtProject.Rows[i]["part.achternaam"].ToString(),
@@ -85,8 +85,8 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
                 {
                     LicenseName = "",
                     Description = "",
-                    Status = "",
-                    RequestedOn = ""
+                    Status = ""
+                    //RequestedOn = ""
                 };
 
                 Classes.Person particulier = new Classes.Person
@@ -103,9 +103,12 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
             ComplaintData bezwaarData = new ComplaintData
             {
                 bezwaar = bezwaar,
-                project = project,
-                vergunning = vergunning,
-                particulier = particulier
+                //project = project,
+                project = null,
+                //vergunning = vergunning,
+                vergunning = null,
+                //particulier = particulier
+                particulier = null
             };
             return bezwaarData;
         }
@@ -117,7 +120,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
             public Classes.Person particulier { get; set; }
         }
 
-        private void fillTelephoneNumberList()
+      /*  private void fillTelephoneNumberList()
         {
             object[] parameters = new object[1];
 
@@ -139,7 +142,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
             {
                 ListTelephoneNumbers.Items.Add(dt.Rows[i]["TELEFOONNUMMER"]);
             }
-        }
+        }*/
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
