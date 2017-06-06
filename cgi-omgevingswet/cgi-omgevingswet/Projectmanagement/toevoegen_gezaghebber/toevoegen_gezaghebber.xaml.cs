@@ -10,8 +10,13 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using System.Diagnostics;
+using System.Windows.Threading;
+using cgi_omgevingswet.Projectmanagement.Complaints;
+using cgi_omgevingswet.Classes;
 
 namespace cgi_omgevingswet.Projectmanagement
 {
@@ -20,10 +25,31 @@ namespace cgi_omgevingswet.Projectmanagement
     /// </summary>
     public partial class toevoegen_gezaghebber : Window
     {
+        private DispatcherTimer _timer;
+        private TimeSpan _time;
+        public delegate void GetBevoegdGezag(Gezaghebber gezaghebbers);
+
         public toevoegen_gezaghebber()
         {
             InitializeComponent();
-            FillDataBase();
+
+            _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+            {
+                _time = _time.Add(TimeSpan.FromSeconds(-1));
+                if (_time <= TimeSpan.Zero)
+                {
+                    FillDataBase();
+                    _timer.Stop();
+                }
+            }, Application.Current.Dispatcher);
+
+            CoolDownFillDataBase(50);
+        }
+
+        private void CoolDownFillDataBase(int Miniseconds)
+        {
+            _time = new TimeSpan(0, 0, 0, 0, Miniseconds);
+            _timer.Start();
         }
 
         private void FillDataBase()
@@ -42,29 +68,30 @@ namespace cgi_omgevingswet.Projectmanagement
             Parameters[2] = "%" + txtFiltTussenvoegsel.Text + "%";
             Parameters[3] = "%" + txtFiltAchternaam.Text + "%";
             Parameters[4] = "%" + txtFiltMailadres.Text + "%";
-            //verbetering is om deze queries de volgende keer in kleine stukken te hakken voor de informatie behoefte dat ik nodig heb.
-            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT * 
-                                                                FROM (SELECT G.GEBRUIKERSNAAM, P.VOORNAAM, P.TUSSENVOEGSEL, P.ACHTERNAAM, G.MAILADRES
-                                                                        FROM GEBRUIKER G INNER JOIN PARTICULIER P ON G.GEBRUIKERSNAAM = P.GEBRUIKERSNAAM
-                                                                        WHERE LOWER(G.GEBRUIKERSNAAM) LIKE @0
-                                                                        AND LOWER(P.VOORNAAM) LIKE @1
-                                                                            AND LOWER(P.TUSSENVOEGSEL) LIKE @2
-                                                                        AND LOWER(P.ACHTERNAAM) LIKE @3
-                                                                        AND LOWER(G.MAILADRES) LIKE @4
-                                                                        ", Parameters);
+
+            string sqlquery = @"SELECT G.GEBRUIKERSNAAM, P.VOORNAAM, P.TUSSENVOEGSEL, P.ACHTERNAAM, G.MAILADRES
+                                FROM GEBRUIKER G 
+                                INNER JOIN PARTICULIER P ON G.GEBRUIKERSNAAM = P.GEBRUIKERSNAAM
+                                      WHERE LOWER(g.gebruikersnaam) LIKE @0
+                                      AND LOWER(p.voornaam) LIKE @1
+                                      AND LOWER(p.tussenvoegsel) LIKE @2
+                                      AND LOWER(p.achternaam) LIKE @3
+                                      AND g.mailadres LIKE @4";
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader(sqlquery, Parameters);
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                var data = new Classes.Gezaghebber
+                var gezaghebbers = new Classes.Gezaghebber
                 {
-                    Gebruikersnaam = dt.Rows[i]["Gebruikersnaam"].ToString(),
+                    Gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString(),
                     Voornaam = dt.Rows[i]["voornaam"].ToString(),
                     Tussenvoegsel = dt.Rows[i]["tussenvoegsel"].ToString(),
                     Achternaam = dt.Rows[i]["achternaam"].ToString(),
                     Mailadres = dt.Rows[i]["mailadres"].ToString()
                 };
 
-                dgtoevoegenGezaghebber.Items.Add(data);
+                dgtoevoegenGezaghebber.Items.Add(gezaghebbers);
             }
         }
 
@@ -75,7 +102,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            CoolDownFillDataBase(1000);
         }
 
         private void btnToevoegen_Click(object sender, RoutedEventArgs e)
@@ -85,6 +112,12 @@ namespace cgi_omgevingswet.Projectmanagement
                 MessageBox.Show("U moet een gebruiker selecteren in de database om bevoegd gezaghebber te maken!");
                 return;
             }
+
+            Gezaghebber gezaghebber = dgtoevoegenGezaghebber.SelectedItem as Classes.Gezaghebber;
+            ProjectForm.Getbevoegdgezag(gezaghebber);
+
+
+            //ProjectForm.GetLicenses(license);
         }
     }
 }

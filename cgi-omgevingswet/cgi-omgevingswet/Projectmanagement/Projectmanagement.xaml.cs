@@ -171,7 +171,8 @@ namespace cgi_omgevingswet.Projectmanagement
                     Mailadres = dt.Rows[i]["mailadres"].ToString(),
                     ProjectTitel = dt.Rows[i]["PROJECTTITEL"].ToString(),
                     licenses = new List<Classes.License>(),
-                    projectcoordinator = new Classes.Projectcoordinator()
+                    projectcoordinator = new Classes.Projectcoordinator(),
+                    gezaghebber = new List<Gezaghebber>()
                 };
 
                 if (rbtnParticulier.IsChecked.Value)

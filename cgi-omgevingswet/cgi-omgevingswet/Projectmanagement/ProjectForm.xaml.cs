@@ -22,6 +22,7 @@ namespace cgi_omgevingswet.Projectmanagement
     {
         public static SelectProjectHelper.SelectProjectHelper.GetCoordinator Getcoordinator;
         public static Licenses.AddLicense.GetLicense GetLicenses;
+        public static toevoegen_gezaghebber.GetBevoegdGezag Getbevoegdgezag;
         private Classes.Projects project;
         private List<Classes.License> newlyAddedLicense = new List<Classes.License>();
         private List<Classes.License> DeletedLicense = new List<Classes.License>();
@@ -35,6 +36,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
             Getcoordinator += Fillcoordinatortextbox;
             GetLicenses += GetLicense;
+            Getbevoegdgezag += getbevoegdgezag;
 
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
             // fillTelephoneNumberList();
@@ -91,6 +93,11 @@ namespace cgi_omgevingswet.Projectmanagement
             newlyAddedLicense.Add(license);
             project.licenses.Add(license);
             refreshLicenseDatagrid();
+        }
+
+        private void getbevoegdgezag(Classes.Gezaghebber gezaghebber)
+        {
+            project.gezaghebber.Add(gezaghebber);
         }
 
         private void fillTelephoneNumberList()
@@ -307,6 +314,12 @@ namespace cgi_omgevingswet.Projectmanagement
             Classes.Complaint bezwaar = new Classes.Complaint();
             Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(bezwaar);
             OpenComplaint.ShowDialog();
+        }
+
+        private void btnToevoegenGezaghebber_Click(object sender, RoutedEventArgs e)
+        {
+            toevoegen_gezaghebber OpenGezaghebber = new toevoegen_gezaghebber();
+            OpenGezaghebber.ShowDialog();
         }
     }
 }
