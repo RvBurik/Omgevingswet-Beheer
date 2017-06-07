@@ -9,7 +9,7 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="85" />
-            <RowDefinition Height="150" />
+            <RowDefinition Height="120" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -28,7 +28,6 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -38,15 +37,13 @@
 
             <Label Style="{StaticResource CommonLabelSize}" Grid.Row="0" Content="Gebruikersnaam:" />
             <Label Style="{StaticResource CommonLabelSize}" Grid.Row="1" Content="Voornaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="2" Content="Tussenvoegsel:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="3" Content="Achternaam:" />
-            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="4" Content="E-mailadres:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="2" Content="Achternaam:" />
+            <Label Style="{StaticResource CommonLabelSize}" Grid.Row="3" Content="E-mailadres:" />
 
             <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="0" Grid.Column="1" x:Name="txtFiltGebruikersnaam" TextChanged="txtFilter_TextChanged"/>
             <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="1" Grid.Column="1" x:Name="txtFiltVoornaam" TextChanged="txtFilter_TextChanged"/>
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="2" Grid.Column="1" x:Name="txtFiltTussenvoegsel" TextChanged="txtFilter_TextChanged"/>
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="3" Grid.Column="1" x:Name="txtFiltAchternaam" TextChanged="txtFilter_TextChanged"/>
-            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="4" Grid.Column="1" x:Name="txtFiltMailadres" TextChanged="txtFilter_TextChanged"/>
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="2" Grid.Column="1" x:Name="txtFiltAchternaam" TextChanged="txtFilter_TextChanged"/>
+            <TextBox Style="{StaticResource CommonTextBoxSize}" Grid.Row="3" Grid.Column="1" x:Name="txtFiltMailadres" TextChanged="txtFilter_TextChanged"/>
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0">
@@ -63,7 +60,6 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Gebruikersnaam" Width="*" Binding="{Binding Path=Gebruikersnaam}"/>
                     <DataGridTextColumn Header="Voornaam" Width="*" Binding="{Binding Path=Voornaam}"/>
-                    <DataGridTextColumn Header="Tussenvoegsel" Width="*" Binding="{Binding Path=Tussenvoegsel}"/>
                     <DataGridTextColumn Header="Achternaam" Width="*" Binding="{Binding Path=Achternaam}"/>
                     <DataGridTextColumn Header="E-mailadres" Width="*" Binding="{Binding Path=Mailadres}"/>
                 </DataGrid.Columns>

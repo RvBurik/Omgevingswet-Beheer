@@ -27,6 +27,8 @@ namespace cgi_omgevingswet.Projectmanagement
         private List<Classes.License> newlyAddedLicense = new List<Classes.License>();
         private List<Classes.License> DeletedLicense = new List<Classes.License>();
         private List<Classes.License> UpdatedLicense = new List<Classes.License>();
+        private List<Classes.Gezaghebber> newlyAddedGezaghebber = new List<Classes.Gezaghebber>();
+        private List<Classes.Gezaghebber> DeletedGezaghebber = new List<Classes.Gezaghebber>();
 
         public ProjectForm(Classes.Projects project)
         {
@@ -41,6 +43,7 @@ namespace cgi_omgevingswet.Projectmanagement
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
             // fillTelephoneNumberList();
             fillLicenseDataGrid();
+            fillGezaghebberDataGrid();
 
             if (project.Bedrijfsnaam == string.Empty)
             {
@@ -182,6 +185,40 @@ namespace cgi_omgevingswet.Projectmanagement
             refreshLicenseDatagrid();
         }
 
+        private void fillGezaghebberDataGrid()
+        {
+            //dit kan ook nog veranderen
+            object[] parameters = new object[1];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+            }
+
+            parameters[0] = project.ProjectID;
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT PG.GEBRUIKERSNAAM, P.VOORNAAM, P.ACHTERNAAM, G.MAILADRES, PG.projectid 
+                                                                    FROM PROJECTROL_van_GEBRUIKER PG
+                                                                    INNER JOIN GEBRUIKER G ON PG.GEBRUIKERSNAAM = G.GEBRUIKERSNAAM
+                                                                    INNER JOIN PARTICULIER P ON G.GEBRUIKERSNAAM = P.GEBRUIKERSNAAM
+                                                                    WHERE projectid = @0 
+                                                                    AND rolnaam = 'GEZAGHEBBER'", parameters);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                var gezaghebbers = new Classes.Gezaghebber
+                {
+                    Gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString(),
+                    Voornaam = dt.Rows[i]["voornaam"].ToString(),
+                    Achternaam = dt.Rows[i]["achternaam"].ToString(),
+                    Mailadres = dt.Rows[i]["mailadres"].ToString(),
+                    ProjectID = (int)dt.Rows[i]["projectid"]
+                };
+
+                dgGezaghebbers.Items.Add(gezaghebbers);
+            }
+        }
+
         private void saveCoordinator()
         {
             int count = 2;
@@ -255,6 +292,29 @@ namespace cgi_omgevingswet.Projectmanagement
             }
         }
 
+        private void saveGezaghebber()
+        {            
+            int count = 2;
+            object[] parameters = new object[count];
+            string[] parametername = new string[count];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+                parametername[i] = string.Empty;
+            }
+
+            for(int i = 0; i < project.gezaghebber.Count; i++) { 
+                parameters[1] = project.ProjectID;
+                parameters[0] = project.gezaghebber[i].Gebruikersnaam;
+
+                parametername[1] = "@_ProjectID";
+                parametername[0] = "@_Gebruikersnaam";
+
+                Classes.Database_Init.SQLExecProcedure("spAddBevoegdGezag", parameters, parametername);
+            }
+        }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             //De werkzaamheid moet nog wel aangepast kunnen worden!!!!!
@@ -265,6 +325,7 @@ namespace cgi_omgevingswet.Projectmanagement
             {
                 saveLicense();
                 saveCoordinator();
+                saveGezaghebber();
                 Close();
             }
 

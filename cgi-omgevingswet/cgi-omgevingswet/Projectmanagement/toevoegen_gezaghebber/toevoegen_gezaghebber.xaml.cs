@@ -56,7 +56,7 @@ namespace cgi_omgevingswet.Projectmanagement
         {
             dgtoevoegenGezaghebber.Items.Clear();
 
-            object[] Parameters = new object[5];
+            object[] Parameters = new object[4];
 
             for (int i = 0; i < Parameters.Length; i++)
             {
@@ -65,18 +65,18 @@ namespace cgi_omgevingswet.Projectmanagement
 
             Parameters[0] = "%" + txtFiltGebruikersnaam.Text + "%";
             Parameters[1] = "%" + txtFiltVoornaam.Text + "%";
-            Parameters[2] = "%" + txtFiltTussenvoegsel.Text + "%";
-            Parameters[3] = "%" + txtFiltAchternaam.Text + "%";
-            Parameters[4] = "%" + txtFiltMailadres.Text + "%";
+            Parameters[2] = "%" + txtFiltAchternaam.Text + "%";
+            Parameters[3] = "%" + txtFiltMailadres.Text + "%";
 
             string sqlquery = @"SELECT G.GEBRUIKERSNAAM, P.VOORNAAM, P.TUSSENVOEGSEL, P.ACHTERNAAM, G.MAILADRES
                                 FROM GEBRUIKER G 
                                 INNER JOIN PARTICULIER P ON G.GEBRUIKERSNAAM = P.GEBRUIKERSNAAM
+                                INNER JOIN GEMEENTE_GEBRUIKER GG ON GG.GEBRUIKERSNAAM = G.GEBRUIKERSNAAM
                                       WHERE LOWER(g.gebruikersnaam) LIKE @0
                                       AND LOWER(p.voornaam) LIKE @1
-                                      AND LOWER(p.tussenvoegsel) LIKE @2
-                                      AND LOWER(p.achternaam) LIKE @3
-                                      AND g.mailadres LIKE @4";
+                                      AND LOWER(p.achternaam) LIKE @2
+                                      AND g.mailadres LIKE @3
+                                      AND GG.RECHTNAAM = 'Gezaghebber'";
 
             DataTable dt = Classes.Database_Init.SQLQueryReader(sqlquery, Parameters);
 
@@ -86,7 +86,6 @@ namespace cgi_omgevingswet.Projectmanagement
                 {
                     Gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString(),
                     Voornaam = dt.Rows[i]["voornaam"].ToString(),
-                    Tussenvoegsel = dt.Rows[i]["tussenvoegsel"].ToString(),
                     Achternaam = dt.Rows[i]["achternaam"].ToString(),
                     Mailadres = dt.Rows[i]["mailadres"].ToString()
                 };
@@ -115,9 +114,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
             Gezaghebber gezaghebber = dgtoevoegenGezaghebber.SelectedItem as Classes.Gezaghebber;
             ProjectForm.Getbevoegdgezag(gezaghebber);
-
-
-            //ProjectForm.GetLicenses(license);
+            Close();
         }
     }
 }
