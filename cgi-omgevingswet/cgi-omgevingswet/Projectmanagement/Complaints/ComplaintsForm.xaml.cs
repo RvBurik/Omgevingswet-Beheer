@@ -26,7 +26,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
         {
             InitializeComponent();
             this.bezwaar = bezwaar;
-            DataContext = fillComplaintData(bezwaar);
+            //DataContext = fillComplaintData(bezwaar);
         }
 
         private ComplaintData fillComplaintData(Classes.Complaint bezwaar)
@@ -168,7 +168,7 @@ namespace cgi_omgevingswet.Projectmanagement.Complaints
             parameters[1] = bezwaar.ProjectID;
             parameters[2] = bezwaar.VergunningsID;
             parameters[3] = bezwaar.Besluit;
-            parameters[4] = bezwaar.Besluittreden;
+            parameters[4] = bezwaar.Besluitreden;
 
             parametername[0] = "@_gebruikersnaam";
             parametername[1] = "@_projectid";

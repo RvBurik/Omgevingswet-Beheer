@@ -13,6 +13,6 @@ namespace cgi_omgevingswet.Classes
         public int VergunningsID { get; set; }
         public string Bezwaarreden { get; set; }
         public string Besluit { get; set; }
-        public string Besluittreden { get; set; }
+        public string Besluitreden { get; set; }
     }
 }

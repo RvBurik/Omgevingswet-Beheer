@@ -38,6 +38,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
             // fillTelephoneNumberList();
+            fillComplaintDataGrid();
             fillLicenseDataGrid();
 
             if (project.Bedrijfsnaam == string.Empty)
@@ -134,6 +135,53 @@ namespace cgi_omgevingswet.Projectmanagement
             {
                 ListAdress.Items.Add(dt.Rows[i]["POSTCODE"] + " " + dt.Rows[i]["huisnummer"] + " " + dt.Rows[i]["toevoeging"]);
             }
+        }
+
+        private void refreshComplaintsDatagrid()
+        {
+            dgComplaints.Items.Refresh();
+        }
+
+        private void fillComplaintDataGrid()
+        {
+            //dit kan ook nog veranderen
+            object[] parameters = new object[1];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+            }
+
+            parameters[0] = project.ProjectID;
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader("select * from bezwaar where projectid = @0", parameters);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                var Complaints = new Classes.Complaint
+                {
+                    Gebruikersnaam = dt.Rows[i]["GEBRUIKERSNAAM"].ToString(),
+                    ProjectID = (int)dt.Rows[i]["PROJECTID"],
+                    VergunningsID = (int)dt.Rows[i]["VERGUNNINGSID"],
+                    Bezwaarreden = dt.Rows[i]["BEZWAARREDEN"].ToString(),
+                    Besluit = null,
+                    Besluitreden = null
+                    //Besluit = dt.Rows[i]["BESLUIT"].ToString(),
+                    //Besluitreden = dt.Rows[i]["BESLUITREDEN"].ToString()
+                };
+                if (dt.Rows[i]["BESLUIT"] != null)
+                {
+                    Complaints.Besluit = dt.Rows[i]["BESLUIT"].ToString();
+                    Complaints.Besluitreden = dt.Rows[i]["BESLUITREDEN"].ToString();
+                }
+
+                //  dgComplaints.Items.Add(Complaints);
+                project.complaints.Add(Complaints);
+            }
+
+            dgComplaints.ItemsSource = project.complaints;
+
+            refreshComplaintsDatagrid();
         }
 
         private void refreshLicenseDatagrid()
@@ -304,8 +352,9 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void btnOpenComplaint_Click(object sender, RoutedEventArgs e)
         {
-            Classes.Complaint bezwaar = new Classes.Complaint();
-            Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(bezwaar);
+            Classes.Complaint selectedComplaint = new Classes.Complaint();
+            selectedComplaint = dgComplaints.SelectedItem as Classes.Complaint;
+            Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(selectedComplaint);
             OpenComplaint.ShowDialog();
         }
     }

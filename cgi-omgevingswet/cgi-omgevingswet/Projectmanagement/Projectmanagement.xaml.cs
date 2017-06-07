@@ -135,7 +135,7 @@ namespace cgi_omgevingswet.Projectmanagement
 
             sqlquery += @"
                         FROM project p
-                        INNER JOIN (SELECT PROJECTID, GEBRUIKERSNAAM, rolnaam FROM PROJECTROL_VAN_GEBRUIKER) PvG ON p.PROJECTID = pvg.PROJECTID AND pvg.rolnaam != 'Gemeente'
+                        INNER JOIN (SELECT PROJECTID, GEBRUIKERSNAAM, rolnaam FROM PROJECTROL_VAN_GEBRUIKER) PvG ON p.PROJECTID = pvg.PROJECTID AND pvg.rolnaam = 'INITIATIEFNEMER'
                         INNER JOIN (SELECT GEBRUIKERSNAAM, MAILADRES FROM GEBRUIKER) g on pvg.GEBRUIKERSNAAM = g.GEBRUIKERSNAAM ";
 
             if (rbtnParticulier.IsChecked.Value)
@@ -170,6 +170,7 @@ namespace cgi_omgevingswet.Projectmanagement
                    
                     Mailadres = dt.Rows[i]["mailadres"].ToString(),
                     ProjectTitel = dt.Rows[i]["PROJECTTITEL"].ToString(),
+                    complaints = new List<Classes.Complaint>(),
                     licenses = new List<Classes.License>(),
                     projectcoordinator = new Classes.Projectcoordinator()
                 };

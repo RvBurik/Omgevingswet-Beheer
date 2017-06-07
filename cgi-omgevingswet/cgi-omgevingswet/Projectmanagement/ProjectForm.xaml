@@ -99,7 +99,12 @@
                         <RowDefinition Height="100" />
                     </Grid.RowDefinitions>
                     <Label FontSize="30" Content="Bezwaren" />
-                    <DataGrid Grid.Row="1"></DataGrid>
+                    <DataGrid Grid.Row="1" x:Name="dgComplaints" ItemsSource="{Binding}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Header="Geb.naam" Binding="{Binding Gebruikersnaam}" />
+                            <DataGridTextColumn Width="*" Header="Verg.id" Binding="{Binding VergunningsID}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Grid Margin="10" Grid.Row="2"  HorizontalAlignment="Right">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80" />
