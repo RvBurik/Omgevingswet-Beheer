@@ -154,14 +154,21 @@
                         <RowDefinition Height="100" />
                     </Grid.RowDefinitions>
                     <Label FontSize="30" Content="Bevoegde gezagen" />
-                    <DataGrid Grid.Row="1"></DataGrid>
+                    <DataGrid Grid.Row="1" x:Name="dgGezaghebbers" ItemsSource="{Binding}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Gebruikersnaam" Width="*" Binding="{Binding Path=Gebruikersnaam}"/>
+                            <DataGridTextColumn Header="Voornaam" Width="*" Binding="{Binding Path=Voornaam}"/>
+                            <DataGridTextColumn Header="Achternaam" Width="*" Binding="{Binding Path=Achternaam}"/>
+                            <DataGridTextColumn Header="E-mailadres" Width="*" Binding="{Binding Path=Mailadres}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                         <Grid Margin="10" Grid.Row="2" HorizontalAlignment="Right">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="80" />
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
-                        <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Toekennen" />
+                        <Button Style="{StaticResource CommonButtonSize}" Grid.Column="0" Content="Toekennen" x:Name="btnToevoegenGezaghebber" Click="btnToevoegenGezaghebber_Click"/>
                         <Button Style="{StaticResource CommonButtonSize}" Grid.Column="2" Content="Verwijderen" />
                     </Grid>
                 </Grid>

@@ -172,7 +172,8 @@ namespace cgi_omgevingswet.Projectmanagement
                     ProjectTitel = dt.Rows[i]["PROJECTTITEL"].ToString(),
                     complaints = new List<Classes.Complaint>(),
                     licenses = new List<Classes.License>(),
-                    projectcoordinator = new Classes.Projectcoordinator()
+                    projectcoordinator = new Classes.Projectcoordinator(),
+                    gezaghebber = new List<Gezaghebber>()
                 };
 
                 if (rbtnParticulier.IsChecked.Value)

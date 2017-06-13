@@ -27,11 +27,15 @@ namespace cgi_omgevingswet.Projectmanagement
         public delegate void GetLicenseFromOtherForm(Classes.License license);
         public static GetLicenseFromOtherForm GetLicensesForInsert;
         public static GetLicenseFromOtherForm GetLicensesForUpdate;
+       // public static Licenses.AddLicense.GetLicense GetLicenses;
+        public static toevoegen_gezaghebber.GetBevoegdGezag Getbevoegdgezag;
         private Classes.Projects project;
         private List<Classes.License> newlyAddedLicense = new List<Classes.License>();
         private List<Classes.License> DeletedLicense = new List<Classes.License>();
         private List<Classes.License> UpdatedLicense = new List<Classes.License>();
         bool saveCoordinatoren = false;
+        private List<Classes.Gezaghebber> newlyAddedGezaghebber = new List<Classes.Gezaghebber>();
+        private List<Classes.Gezaghebber> DeletedGezaghebber = new List<Classes.Gezaghebber>();
 
         public ProjectForm(Classes.Projects project)
         {
@@ -40,13 +44,18 @@ namespace cgi_omgevingswet.Projectmanagement
             this.project = project;
 
             Getcoordinator += Fillcoordinatortextbox;
+
             GetLicensesForInsert += GetLicense;
             GetLicensesForUpdate += GetLicenseForUpdate;
+
+            //GetLicenses += GetLicense;
+            Getbevoegdgezag += getbevoegdgezag;
 
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
             // fillTelephoneNumberList();
             fillComplaintDataGrid();
             fillLicenseDataGrid();
+            fillGezaghebberDataGrid();
 
             if (project.Bedrijfsnaam == string.Empty)
             {
@@ -107,6 +116,12 @@ namespace cgi_omgevingswet.Projectmanagement
         {
             UpdatedLicense.Add(license);
             refreshLicenseDatagrid();
+        }
+
+        private void getbevoegdgezag(Classes.Gezaghebber gezaghebber)
+        {
+            project.gezaghebber.Add(gezaghebber);
+            dgGezaghebbers.Items.Add(gezaghebber);
         }
 
         private void fillTelephoneNumberList()
@@ -248,6 +263,40 @@ namespace cgi_omgevingswet.Projectmanagement
             refreshLicenseDatagrid();
         }
 
+        private void fillGezaghebberDataGrid()
+        {
+            //dit kan ook nog veranderen
+            object[] parameters = new object[1];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+            }
+
+            parameters[0] = project.ProjectID;
+
+            DataTable dt = Classes.Database_Init.SQLQueryReader(@"SELECT PG.GEBRUIKERSNAAM, P.VOORNAAM, P.ACHTERNAAM, G.MAILADRES, PG.projectid 
+                                                                    FROM PROJECTROL_van_GEBRUIKER PG
+                                                                    INNER JOIN GEBRUIKER G ON PG.GEBRUIKERSNAAM = G.GEBRUIKERSNAAM
+                                                                    INNER JOIN PARTICULIER P ON G.GEBRUIKERSNAAM = P.GEBRUIKERSNAAM
+                                                                    WHERE projectid = @0 
+                                                                    AND rolnaam = 'GEZAGHEBBER'", parameters);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                var gezaghebbers = new Classes.Gezaghebber
+                {
+                    Gebruikersnaam = dt.Rows[i]["gebruikersnaam"].ToString(),
+                    Voornaam = dt.Rows[i]["voornaam"].ToString(),
+                    Achternaam = dt.Rows[i]["achternaam"].ToString(),
+                    Mailadres = dt.Rows[i]["mailadres"].ToString(),
+                    ProjectID = (int)dt.Rows[i]["projectid"]
+                };
+
+                dgGezaghebbers.Items.Add(gezaghebbers);
+            }
+        }
+
         private void saveCoordinator()
         {
             int count = 0;
@@ -338,6 +387,29 @@ namespace cgi_omgevingswet.Projectmanagement
             }
         }
 
+        private void saveGezaghebber()
+        {            
+            int count = 2;
+            object[] parameters = new object[count];
+            string[] parametername = new string[count];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new object();
+                parametername[i] = string.Empty;
+            }
+
+            for(int i = 0; i < project.gezaghebber.Count; i++) { 
+                parameters[1] = project.ProjectID;
+                parameters[0] = project.gezaghebber[i].Gebruikersnaam;
+
+                parametername[1] = "@_ProjectID";
+                parametername[0] = "@_Gebruikersnaam";
+
+                Classes.Database_Init.SQLExecProcedure("spAddBevoegdGezag", parameters, parametername);
+            }
+        }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             //De werkzaamheid moet nog wel aangepast kunnen worden!!!!!
@@ -346,9 +418,11 @@ namespace cgi_omgevingswet.Projectmanagement
 
             if (result == MessageBoxResult.Yes)
             {
-                saveLicense();
                 if (saveCoordinatoren)
                     saveCoordinator();
+
+                saveGezaghebber();
+                saveLicense();
                 Close();
             }
 
@@ -407,6 +481,12 @@ namespace cgi_omgevingswet.Projectmanagement
             selectedComplaint = dgComplaints.SelectedItem as Classes.Complaint;
             Complaints.ComplaintsForm OpenComplaint = new Complaints.ComplaintsForm(selectedComplaint);
             OpenComplaint.ShowDialog();
+        }
+
+        private void btnToevoegenGezaghebber_Click(object sender, RoutedEventArgs e)
+        {
+            toevoegen_gezaghebber OpenGezaghebber = new toevoegen_gezaghebber();
+            OpenGezaghebber.ShowDialog();
         }
     }
 }

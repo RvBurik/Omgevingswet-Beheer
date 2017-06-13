@@ -1,6 +1,7 @@
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\bin\Debug\cgi-omgevingswet.exe.config
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\bin\Debug\cgi-omgevingswet.exe
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\bin\Debug\cgi-omgevingswet.pdb
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet.csprojResolveAssemblyReference.cache
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\MainWindow.baml
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Licenses\AddLicense.baml
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Licenses\LicenseForm.baml
@@ -15,12 +16,12 @@ C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\ProjectForm.g.cs
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Projectmanagement.g.cs
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\SelectProjectHelper\SelectProjectHelper.g.cs
-C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\toevoegen_gezaghebber.g.cs
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\toevoegen_gezaghebber\toevoegen_gezaghebber.g.cs
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\App.g.cs
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet_MarkupCompile.cache
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet_MarkupCompile.lref
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\Complaints\ComplaintsForm.baml
-C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\toevoegen_gezaghebber.baml
+C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\Projectmanagement\toevoegen_gezaghebber\toevoegen_gezaghebber.baml
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet.g.resources
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi_omgevingswet.Properties.Resources.resources
 C:\Users\Johan Heij\Documents\repositories\Omgevingswet\Omgevingswet-Beheer\cgi-omgevingswet\cgi-omgevingswet\obj\Debug\cgi-omgevingswet.csproj.GenerateResource.Cache

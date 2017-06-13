@@ -16,6 +16,7 @@ namespace cgi_omgevingswet.Classes
         public Projectcoordinator projectcoordinator { get; set; }
         public List<Complaint> complaints { get; set; }
         public List<License> licenses { get; set; }
+        public List<Gezaghebber> gezaghebber { get; set; }
         public DateTime Aangemaaktop { get; set; }
         public string Werkzaamheid { get; set; }
         public string Volledigenaam { get; set; }

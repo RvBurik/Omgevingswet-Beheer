@@ -96,7 +96,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Projectmanagement\toevoegen_gezaghebber.xaml">
+    <Page Include="Projectmanagement\toevoegen_gezaghebber\toevoegen_gezaghebber.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -120,7 +120,7 @@
     <Compile Include="Projectmanagement\SelectProjectHelper\SelectProjectHelper.xaml.cs">
       <DependentUpon>SelectProjectHelper.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Projectmanagement\toevoegen_gezaghebber.xaml.cs">
+    <Compile Include="Projectmanagement\toevoegen_gezaghebber\toevoegen_gezaghebber.xaml.cs">
       <DependentUpon>toevoegen_gezaghebber.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
