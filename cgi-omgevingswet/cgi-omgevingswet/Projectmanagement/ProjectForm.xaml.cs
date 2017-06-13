@@ -20,12 +20,18 @@ namespace cgi_omgevingswet.Projectmanagement
     /// </summary>
     public partial class ProjectForm : Window
     {
+        Classes.Projectcoordinator NewProjectcoordinator = new Classes.Projectcoordinator();
+
         public static SelectProjectHelper.SelectProjectHelper.GetCoordinator Getcoordinator;
-        public static Licenses.AddLicense.GetLicense GetLicenses;
+
+        public delegate void GetLicenseFromOtherForm(Classes.License license);
+        public static GetLicenseFromOtherForm GetLicensesForInsert;
+        public static GetLicenseFromOtherForm GetLicensesForUpdate;
         private Classes.Projects project;
         private List<Classes.License> newlyAddedLicense = new List<Classes.License>();
         private List<Classes.License> DeletedLicense = new List<Classes.License>();
         private List<Classes.License> UpdatedLicense = new List<Classes.License>();
+        bool saveCoordinatoren = false;
 
         public ProjectForm(Classes.Projects project)
         {
@@ -34,7 +40,8 @@ namespace cgi_omgevingswet.Projectmanagement
             this.project = project;
 
             Getcoordinator += Fillcoordinatortextbox;
-            GetLicenses += GetLicense;
+            GetLicensesForInsert += GetLicense;
+            GetLicensesForUpdate += GetLicenseForUpdate;
 
             lblTitle.Content = "Project '" + project.ProjectTitel + "' beheren";
            // fillTelephoneNumberList();
@@ -82,14 +89,22 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void Fillcoordinatortextbox(string coordinator, string gebruikersnaam)
         {
-            txtProjectCoördinator.Text = coordinator;
-            project.projectcoordinator.Gebruikersnaam = gebruikersnaam;
+            NewProjectcoordinator.Gebruikersnaam = gebruikersnaam;
+            NewProjectcoordinator._Projectcoordinator = coordinator;
+            txtProjectCoördinator.Text = NewProjectcoordinator._Projectcoordinator;
+            saveCoordinatoren = true;
         }
 
         private void GetLicense(Classes.License license)
         {
             newlyAddedLicense.Add(license);
             project.licenses.Add(license);
+            refreshLicenseDatagrid();
+        }
+
+        private void GetLicenseForUpdate(Classes.License license)
+        {
+            UpdatedLicense.Add(license);
             refreshLicenseDatagrid();
         }
 
@@ -142,8 +157,9 @@ namespace cgi_omgevingswet.Projectmanagement
         }
 
         private void fillLicenseDataGrid()
-        {
-            //dit kan ook nog veranderen
+        {            //dit kan ook nog veranderen
+            project.licenses.Clear();
+
             object[] parameters = new object[1];
 
             for (int i = 0; i < parameters.Length; i++)
@@ -162,14 +178,23 @@ namespace cgi_omgevingswet.Projectmanagement
                     VergunningsID = (int)dt.Rows[i]["VERGUNNINGSID"],
                     LicenseName = dt.Rows[i]["VERGUNNINGSNAAM"].ToString(),
                     Description = dt.Rows[i]["OMSCHRIJVING"].ToString(),
+                    RequestedOn = Convert.ToDateTime(dt.Rows[i]["DATUMAANVRAAG"]),//ik moet de tijd wegknippen
                     Status = dt.Rows[i]["STATUS"].ToString(),
-                    RequestedOn = Convert.ToDateTime(dt.Rows[i]["DATUMAANVRAAG"])//ik moet de tijd wegknippen
+
                 };
+
+                if (Licenses.Status == "Aangevraagd")
+                    Licenses.status = Classes.Status.Aangevraagd;
+                else if (Licenses.Status == "Uitgegeven")
+                    Licenses.status = Classes.Status.Goedkeuren;
+                else if (Licenses.Status == "Afgewezen")
+                    Licenses.status = Classes.Status.Afkeuren;
 
               //  dgLicenses.Items.Add(Licenses);
                 project.licenses.Add(Licenses);
 			}
 
+            dgLicenses.ItemsSource = null;
             dgLicenses.ItemsSource = project.licenses;
 
             refreshLicenseDatagrid();
@@ -177,7 +202,9 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void saveCoordinator()
         {
-            int count = 2;
+            int count = 0;
+            if (project.projectcoordinator.Gebruikersnaam != null) count = 3;
+            else count = 2;
             object[] parameters = new object[count];
             string[] parametername = new string[count];
 
@@ -188,12 +215,20 @@ namespace cgi_omgevingswet.Projectmanagement
             }
 
             parameters[0] = project.ProjectID;
-            parameters[1] = project.projectcoordinator.Gebruikersnaam;
+            parameters[1] = NewProjectcoordinator.Gebruikersnaam;
+
+            if (project.projectcoordinator.Gebruikersnaam != null)
+                parameters[2] = project.projectcoordinator.Gebruikersnaam;
 
             parametername[0] = "@_ProjectId";
             parametername[1] = "@_Gebruikersnaam";
 
+            if (project.projectcoordinator.Gebruikersnaam != null)
+                parametername[2] = "@_OldGebruikersnaam";
+
             Classes.Database_Init.SQLExecProcedure("Spoc_Set_ProjectCoordinator", parameters, parametername);
+
+            project.projectcoordinator = NewProjectcoordinator;
         }
 
         private void saveLicense()
@@ -215,14 +250,21 @@ namespace cgi_omgevingswet.Projectmanagement
                     parameters[0] = newlyAddedLicense[i].LicenseName;
                     parameters[1] = newlyAddedLicense[i].Description;
                     parameters[2] = project.ProjectID;
-                    parameters[3] = "Aangevraagd";
+
+                    if (newlyAddedLicense[i].status == Classes.Status.Aangevraagd)
+                        parameters[3] = "Aangevraagd";
+                    else if (newlyAddedLicense[i].status == Classes.Status.Goedkeuren)
+                        parameters[3] = "Uitgegeven";
+                    else if (newlyAddedLicense[i].status == Classes.Status.Afkeuren)
+                        parameters[3] = "Afgewezen";
+
 
                     parametername[0] = "@_License";
                     parametername[1] = "@_Description";
                     parametername[2] = "@_ProjectID";
                     parametername[3] = "@_Status";
 
-                    Classes.Database_Init.SQLExecProcedure("Spoc_Add_License", parameters, parametername);
+                    Classes.Database_Init.SQLExecProcedure("spAdd_License", parameters, parametername);
                 }
             }
 
@@ -257,7 +299,8 @@ namespace cgi_omgevingswet.Projectmanagement
             if (result == MessageBoxResult.Yes)
             {
                 saveLicense();
-                saveCoordinator();
+                if (saveCoordinatoren)
+                    saveCoordinator();
                 Close();
             }
 
@@ -293,7 +336,15 @@ namespace cgi_omgevingswet.Projectmanagement
 
         private void btnOpenLicense_Click(object sender, RoutedEventArgs e)
         {
+            if (dgLicenses.SelectedItem == null)
+            {
+                MessageBox.Show("U moet een vergunning selecteren wilt u er een openen");
+                return;
+            }
 
+            Licenses.LicenseForm licenceForm = new Licenses.LicenseForm((dgLicenses.SelectedItem as Classes.License), project.ProjectID);
+            licenceForm.ShowDialog();
+            fillLicenseDataGrid();
         }
     }
 }

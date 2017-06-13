@@ -8,7 +8,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         
-        <Label FontSize="32" Content="Vergunningsaanvraag voor&#10;[projectnaam]" />
+        <Label FontSize="32" Content="Vergunningsaanvraag" />
         
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -25,8 +25,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 
                 <Grid.ColumnDefinitions>
@@ -34,21 +32,15 @@
                     <ColumnDefinition Width="120" />
                 </Grid.ColumnDefinitions>
                 <Label Content="Vergunningsnaam: " />
-                <TextBox Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+                <TextBox Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" IsReadOnly="True" Text="{Binding LicenseName}" />
 
                 <Label Grid.Row="1" Content="Datum aanvraag: " />
-                <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
-                
-                <Label Grid.Row="2" Content="Datum uitgave: " />
-                <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
-                
-                <Label Grid.Row="3" Content="Datum verloop: " />
-                <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" />
+                <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource CommonTextBoxSize}" IsReadOnly="True" Text="{Binding RequestedOn}" />
             </Grid>
             
             <Grid Grid.Row="1">
                 <Label Content="Omschrijving:" />
-                <TextBox Margin="0,30,0,0" />
+                <TextBox Margin="0,30,0,0" IsReadOnly="True" Text="{Binding Description}" TextWrapping="Wrap" />
             </Grid>
             
             <Grid Grid.Row="2">
@@ -65,9 +57,21 @@
                 
                 <Label Content="Status: " />
 
-                <Button Margin="0,0,5,0" Grid.Row="1" Grid.Column="0" Content="Goedgekeurd" />
-                <Button Margin="5,0,5,0" Grid.Row="1" Grid.Column="1" Content="Afgekeurd" />
-                <Button Margin="5,0,0,0" Grid.Row="1" Grid.Column="2" Content="In behandeling" />
+                <RadioButton VerticalAlignment="Center" GroupName="Type" Grid.Row="1" Grid.Column="0" Content="Goedkeuren" IsChecked="True" x:Name="rbtnGoedkeuren" Checked="rbtnGoedkeuren_Checked"/>
+                <RadioButton VerticalAlignment="Center" GroupName="Type" Grid.Row="1" Grid.Column="1" Content="Afkeuren" x:Name="rbtnAfkeuren" Checked="rbtnAfkeuren_Checked" />
+            </Grid>
+            <Label Grid.Row="3" Content="Omschrijving status:" />
+            <TextBox Grid.Row="3" Margin="0,30,0,10" x:Name="txtOmschrijvingStatus"/>
+            
+            <Grid Grid.Row="4" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+
+                <Button Content="Sluiten" Click="btnClose_Click" x:Name="btnClose" />
+                <Button Content="Opslaan" Click="btnSave_Click" x:Name="btnSave" Grid.Column="2" />
             </Grid>
         </Grid>
     </Grid>

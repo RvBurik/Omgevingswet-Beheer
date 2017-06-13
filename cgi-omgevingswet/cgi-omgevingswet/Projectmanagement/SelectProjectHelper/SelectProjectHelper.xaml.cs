@@ -42,8 +42,8 @@ namespace cgi_omgevingswet.Projectmanagement.SelectProjectHelper
             parameters[0] = "%" + txtFiltCoordinator.Text + "%";
 
             DataTable dt = Classes.Database_Init.SQLQueryReader(@"select * from gemeente_gebruiker g
-                                            inner join (select voornaam, tussenvoegsel, achternaam, gebruikersnaam as part_gebruiker from PARTICULIER) p ON g.gebruikersnaam = p.part_gebruiker
-                                             where rechtnaam = 'coördinator'");
+                                inner join (select voornaam, tussenvoegsel, achternaam, gebruikersnaam as part_gebruiker from PARTICULIER) p ON g.gebruikersnaam = p.part_gebruiker
+                                where rechtnaam = 'coördinator' and voornaam like @0", parameters);
 
             for (int i = 0; i < dt.Rows.Count; i++)
 			{
