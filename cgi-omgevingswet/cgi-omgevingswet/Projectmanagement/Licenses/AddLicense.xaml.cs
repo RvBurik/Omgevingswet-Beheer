@@ -20,7 +20,6 @@ namespace cgi_omgevingswet.Projectmanagement.Licenses
     /// </summary>
     public partial class AddLicense : Window
     {
-        public delegate void GetLicense(Classes.License license);
 
         public AddLicense()
         {
@@ -65,7 +64,7 @@ namespace cgi_omgevingswet.Projectmanagement.Licenses
 
             if (dgSelectLicense.SelectedItem == null)
             {
-                MessageBox.Show("U moet een vergunning kiezen");
+                MessageBox.Show("U moet een vergunning kiezen.");
                 return;
             }
 
@@ -73,11 +72,12 @@ namespace cgi_omgevingswet.Projectmanagement.Licenses
             {
                 LicenseName = (dgSelectLicense.SelectedItem as License).LicenseName,
                 Description = txtDescription.Text,
-                Status = "Aangevraagd",
+                status = Classes.Status.Aangevraagd,
                 RequestedOn = DateTime.Today
             };
 
-            ProjectForm.GetLicenses(license);
+            ProjectForm.GetLicensesForInsert(license);
+            Close();
         }
     }
 }
